@@ -1,16 +1,13 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.NAME, process.env.DATA, process.env.PASS, {
+    host: 'localhost',
     dialect: 'postgres'
 })
 
-new Sequelize(
-    process.env.DATABASE_URL || `postgresql://postgres:${encodeURIComponent(process.env.PASS)}/docit`
-    )
-
 sequelize.authenticate().then(
     function(){
-        console.log('doc[It] + pgDB = 4eva! lol')
+        console.log('marsServer + pgDB = 4eva! lol')
     },
     function(err){
         console.log(err);

@@ -5,17 +5,18 @@ module.exports = function(sequelize, DataType){
             allowNull: false,
             unique: true
         },
-        passwordhash:{
+        password:{
             type: DataType.STRING,
             allowNull: false
         },
-        confirmed_email:{
-           type: DataType.BOOLEAN,
-           //allowNull: true change to false after initial testing
+        is_admin:{
+            type: DataType.BOOLEAN,
+            allowNull: true
         },
-        // timezone:{
-        //     type: DataType.ENUM,
-        //      allowNull: true
-        // }
+        adminID:{
+            type: DataType.STRING,
+            allowNull: true,
+            unique: true
+        }
     });
 };
