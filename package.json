@@ -1,7 +1,7 @@
 {
-  "name": "docit",
-  "version": "1.0.0",
-  "description": "docitv server-blueBadgeProject",
+  "name": "cosmoknotserver",
+  "version": "0.5.0",
+  "description": "cosmoknotserver-redBadgeProject",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
