@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize(process.env.NAME, process.env.DATA, process.env.PASS, {
-    host: 'localhost',
+const sequelize = new Sequelize(
+    process.env.DB_URL ||
+    `postgresql:postgres:${encodeURIComponent(process.env.PASS)}@localhost/marsExploration`,
+    {
     dialect: 'postgres'
 })
 

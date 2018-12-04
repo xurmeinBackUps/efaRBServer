@@ -74,7 +74,7 @@ router.delete('/delete_entry/:id', function(req, res){
         }
     }).then(
         function deleteEntrySuccess(data){
-            res.send(`${data} has been removed from your docket`);
+            res.send('What Journal entry?');
         },
         function deleteEntryError(err){
             res.status(500).send({error: '500 - Internal Server Error'});
