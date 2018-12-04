@@ -6,14 +6,14 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs')
 
 router.post('/register', function(req, res){ 
-    let userName = req.body.user.username;
+    let Username = req.body.user.username;
     let passwordhash = req.body.user.password;
     let admin = req.body.user.is_admin;
     let adminEmail = req.body.user.adminID;
 
     if(admin === true){
         User.create({
-            username : userName,
+            username : Username,
             password : bcrypt.hashSync(passwordhash, 10),
             is_admin : admin,
             adminID : bcrypt.hashSync(adminEmail, 15)
@@ -34,7 +34,7 @@ router.post('/register', function(req, res){
         );
     } else if(admin === false || null){
         User.create({
-            username : userName,
+            username : Username,
             password : bcrypt.hashSync(passwordhash, 10)
         }).then(
             function createUserSuccess(user){
@@ -54,12 +54,15 @@ router.post('/register', function(req, res){
 
 
 router.post('/login', function(req, res){
-    User.findOne( { where: { username: req.body.user.username } } 
-        ).then(
-            (req.body.user.is_admin === true) ? User.findOne( { where: { adminID: req.body.user.adminID } } 
-            ).then(
-            function(adminID){
-                if(adminID){
+    
+    let admin = req.body.user.is_admin;
+
+    (admin === true) ? User.findOne({
+       where : { username : req.body.user.username, adminID : req.body.user.adminID } 
+       }).then(user => {console.log(user)
+        if(user){
+            let user = req.body.user;
+        
                     bcrypt.compare(req.body.user.adminID, user.adminID, function(err, adminMatch){
                         if(adminMatch){
                             bcrypt.compare(req.body.user.password, user.password, function(err, authMatch){
@@ -67,47 +70,56 @@ router.post('/login', function(req, res){
                                     let token = jwt.sign({id : user.id}, process.env.SIGN, {expiresIn: 60*60*24} );
                                     let aToken = jwt.sign({id: user.id}, process.env.SIGN, {expiresIn: 60*60*16});
                                     res.json({
-                                       adminEmail: adminID,
-                                       message: `Welcome back ${user.username}`,
-                                       sessionToken : token,
-                                       adminToken: aToken
+                                        adminID : user,
+                                        message : 'Welcome back',
+                                        sessionToken : token,
+                                        adminToken : aToken
                                     });
                                 } else {
                                     res.status(502).send({ error: "502/Bad Gateway - if only you were Jeff Bezos..." })
-                                } 
+                                }
+                            },
+                            function(){
+                                res.status(501).send({ error: "501 - Get off twitter, Elon!" })
                             });
                         } else {
                             res.status(500).send({ error: "500 - You're not Sir Richard Branson!"})
                         }
                     },
-                    function(err){
+                    function(){
                         res.status(501).send({ error: "501 - Get off twitter, Elon!" })
-                    })
-                }  else {
+                    });
+                } else {
                     res.status(500).send({ error: "500 - something, something...innovation"})
                 }
             }
-        ) : (req.body.user.is_admin !== false) ? function(user){
+        )
+    : User.findOne({
+        where : { username : req.body.user.username }
+        }).then(function(user){ 
                 if(user){
-                bcrypt.compare(req.body.user.password, user.password, function(err, authMatch){
-                    if(authMatch){
-                        // var token = jwt.sign({id: user.id}, process.env.SIGN, {expiresIn: 60*60*16});
-                        res.json({
-                           username: user,
-                           message: `Welcome back ${user.username}`,
-                           sessionToken: token
-                        });
-                    } else {
-                        res.status(502).send({ error: "502/Bad Gateway - if only you were Jeff Bezos..." })
-                    }
-                });
-            } else {
-                res.status(500).send({ error: "500 - You're not Sir Richard Branson!"})
+                    // console.log(user);
+                    bcrypt.compare(req.body.user.password, user.password, function(err, authMatch){
+                        if(authMatch){
+                            let token = jwt.sign({id: user.id}, process.env.SIGN, {expiresIn: 60*60*16});
+                            res.json({
+                                username: user,
+                                message: 'Welcome back',
+                                sessionToken: token
+                            });
+                        } else {
+                            res.status(502).send({ error: "502/Bad Gateway - if only you were Jeff Bezos..." })
+                        }
+                    });
+                } else {
+                    res.status(500).send({ error: "500 - You're not Sir Richard Branson!"})
+                }
+            },
+            function(){
+                res.status(501).send({ error: "501 - Come back when you own one of the following: A) SpaceX, B) Virgin, or C) Amazon"  })
             }
-        } : function(error){
-            res.status(501).send({ error: "501 - Come back when you own one of the following: A) SpaceX, B) Virgin, or C) Amazon"  })
-        }
-    );
-});
+        );
+    }
+);
 
 module.exports = router;
