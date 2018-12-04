@@ -3,6 +3,10 @@ var sequelize = require('../db');
 var User = sequelize.import('../models/user');
 
 let admin = req.body.user.is_admin;
+
+////////////////////////////////////////
+/////WE MAY NOT NEED THIS CODE/FILE/////
+//////////////////////////////////////
 module.exports = function(req, res, next){
     if(req.method == 'OPTIONS'){
         next();
