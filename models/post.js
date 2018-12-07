@@ -1,14 +1,14 @@
 module.exports = function(sequelize, DataType){
-    return sequelize.define('journal_entry', {
-        author:{
+    return sequelize.define('userpost', {
+        creator:{
             type: DataType.STRING,
             allowNull: false,
         },
-        title:{
+        label:{
             type: DataType.STRING,
             allowNull: false,
         },
-        entry:{
+        content_text:{
             type: DataType.TEXT,
             allowNull: false,
         }

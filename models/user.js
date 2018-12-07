@@ -3,11 +3,18 @@ module.exports = function(sequelize, DataType){
         username:{
             type: DataType.STRING,
             allowNull: false,
+            validate:{
+                min:[3],
+                max:[15]
+            },
             unique: true
         },
         password:{
             type: DataType.STRING,
-            allowNull: false
+            allowNull: false,
+            validate:{
+                min:[7]
+            }
         },
         is_admin:{
             type: DataType.BOOLEAN,
