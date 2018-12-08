@@ -5,7 +5,7 @@ var app = express();
 
 
 var user = require('./controllers/usercontroller');
-var post = require('./controllers/postcontroller');
+var userpost = require('./controllers/userpostcontroller');
 
 var sequelize = require('./db');
 
@@ -24,7 +24,7 @@ app.use('/user', user);
 
 app.use(require('./middleware/validate-session'))
 
-app.use('/my/account', post);
+app.use('/myaccount', userpost);
 
 
 app.listen(process.env.PORT, () => {

@@ -1,13 +1,11 @@
 var router = require('express').Router();
 var sequelize = require('../db');
-var UserPost = sequelize.import('../models/post');
+var UserPost = sequelize.import('../models/userpost');
 
-router.post('/new_entry', function (req, res){
+router.post('/new_post', function (req, res){
     let Creator = req.user.username;
     let Label = req.body.userpost.label;
     let ContentText = req.body.userpost.content_text;
-
-   
 
     UserPost.create({
         creator : Creator,
@@ -22,8 +20,8 @@ router.post('/new_entry', function (req, res){
                 Creator : req.body.userpost.creator
             }); 
         },
-        function userPostError(err){
-            res.status(500).send(err);
+        function userPostError(){
+            res.status(500).send({error: '500 - Internal Server Error'});
         }
     );
 });
@@ -38,7 +36,7 @@ router.get('/userposts', function(req, res){
         function myUserPosts(data){
             res.json(data)
         },
-        function getAllFail(err){
+        function getAllFail(){
             res.status(500).send({error: '500 - Internal Service Error'});
         }
     );
@@ -57,7 +55,7 @@ router.get('/userposts/:id', function(req, res){
         function findOneUserPost(data){
             res.json(data);
         },
-        function noFindUserPost(err){
+        function noFindUserPost(){
             res.status(500).send({error : '500 - Internal Service Error'})
         }
     )
