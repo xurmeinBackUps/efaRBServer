@@ -1,23 +1,25 @@
 var router = require('express').Router();
 var sequelize = require('../db');
-var UserPost = sequelize.import('../models/userpost');
+var validateSession = require('../middleware/validate-session')
+var Content = sequelize.import('../models/content');
 
-router.post('/new_post', function (req, res){
-    let Creator = req.user.username;
-    let Label = req.body.userpost.label;
-    let ContentText = req.body.userpost.content_text;
+router.post('/new_post', validateSession, function (req, res){
+    let userid = req.body.content.creator;
+    let Creator = req.body.content.creator;
+    let Label = req.body.content.label;
+    let ContentText = req.body.content.content_text;
 
-    UserPost.create({
+    Content.create({
         creator : Creator,
         label : Label,
-        entry : ContentText
-    } 
+        content_text : ContentText
+    }, {where: {label : Label, creator : userid, content_text: ContentText }}
     ).then(
-        function newUserPost(){
+        function userPostSuccess(){
             res.json({
                 message : 'Saved! See you Space Cowboy...',
-                Label : req.body.userpost.label,
-                Creator : req.body.userpost.creator
+                Label : req.body.content.label,
+                Creator : req.body.content.creator
             }); 
         },
         function userPostError(){
@@ -26,10 +28,10 @@ router.post('/new_post', function (req, res){
     );
 });
 
-router.get('/userposts', function(req, res){
+router.get('/userposts', validateSession, function(req, res){
     let Creator = req.user.username;
 
-    UserPost.findAll({
+    Content.findAll({
         where: { creator : Creator }
     })
     .then(
@@ -42,11 +44,11 @@ router.get('/userposts', function(req, res){
     );
 });
 
-router.get('/userposts/:id', function(req, res){
+router.get('/userposts/:id', validateSession, function(req, res){
     let data = req.params.id;
     let Creator = req.user.username;
 
-    UserPost.findOne({
+    Content.findOne({
         where: { 
             id : data,
             creator : Creator
@@ -61,11 +63,11 @@ router.get('/userposts/:id', function(req, res){
     )
 })
 
-router.delete('/userposts/delete/:id', function(req, res){
+router.delete('/userposts/delete/:id', validateSession, function(req, res){
     let data = req.params.id;
     let Creator = req.user.username;
 
-    UserPost.destroy({
+    Content.destroy({
         where: { 
             id : data,
             creator : Creator
@@ -80,14 +82,14 @@ router.delete('/userposts/delete/:id', function(req, res){
     );
 });
 
-router.put('/userposts/edit/:id', function(req, res){
+router.put('/userposts/edit/:id', validateSession, function(req, res){
     let data = req.params.id;
     let Creator = req.user.username;
     
-    let Label = req.body.userpost.label;
-    let ContentText = req.body.userpost.content_text;
+    let Label = req.body.content.label;
+    let ContentText = req.body.content.content_text;
 
-    UserPost.update({
+    Content.update({
         label : Label,
         content_text : ContentText
     },  { where: { 

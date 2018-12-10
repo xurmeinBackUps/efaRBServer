@@ -38,12 +38,13 @@ router.post('/register/admin', function(req, res){
 router.post('/register/new_user', adminValidation, function(req, res){
     let Username = req.body.user.username;
     let passwordhash = req.body.user.password
+    let admin = req.body.user.is_admin;
     let AssociatedAdmin = req.body.user.adminID;
 
     User.create({
         username : Username,
         password : bcrypt.hashSync(passwordhash, 5),
-        is_admin : null,
+        is_admin : admin,
         adminID : AssociatedAdmin
     }).then(
         function createUserSuccess(user){
@@ -67,7 +68,7 @@ router.post('/login', function(req, res){
                 if(user){
                     bcrypt.compare(req.body.user.password, user.password, function(err, authMatch){
                         if(authMatch){
-                            let aToken = jwt.sign({id : user.id}, process.env.SIGN, {expiresIn: 60*60*24} );
+                        let aToken = jwt.sign({id : user.id}, process.env.SIGN, {expiresIn: 60*60*24} );
                         let token = jwt.sign({id : user.id}, process.env.SIGN, {expiresIn: 60*60*24} );
                         res.json({
                             username : user,
@@ -153,16 +154,14 @@ router.get('/sub-users/:id', adminValidation, function(req, res){
 
 router.delete('/delete_account/:id', sessionValidation, function(req, res){
     let data = req.params.id;
-    let userid = req.user.id;
 
     User.destroy({
         where: { 
             id : data,
-            user : userid
         }
     }).then(
-        function deleteUserSuccess(data){
-            res.send(data, 'What user?');
+        function deleteUserSuccess(){
+            res.send('What user?');
         },
         function deleteUserError(){
             res.status(500).send({error: '500 - Internal Server Error'});
@@ -180,8 +179,8 @@ router.put('/update_account/:id', sessionValidation, function(req, res){
         username : newUsername,
         password : bcrypt.hashSync(newPasswordhash, 10)
     },  { where: { 
-            id : data,
-            user : userid
+           id : data,
+           id : userid
         }
     }).then(
         function userUpdated(updateUserAccount){

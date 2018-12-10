@@ -3,9 +3,6 @@ var sequelize = require('../db');
 var User = sequelize.import('../models/user');
 
 
-////////////////////////////////////////
-/////WE MAY NOT NEED THIS CODE/FILE/////
-//////////////////////////////////////
 module.exports = function(req, res, next){
     if(req.method == 'OPTIONS'){
         next();
@@ -16,8 +13,8 @@ module.exports = function(req, res, next){
                 if(decoded){
                     User.findOne(
                         { where: { id : decoded.id} }
-                        ).then(admin => { 
-                            req.user = admin;
+                        ).then(user => { 
+                            req.user = user;
                             next();
                         },
                         function(){ res.status(401).send({error: 'Not authorized, admin status required'})
