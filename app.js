@@ -12,7 +12,7 @@ var sequelize = require('./db');
 var bodyParser = require('body-parser');
 
 
-sequelize.sync(); ///{force:true} to reset tables in DB
+sequelize.sync({force:true}); ///{force:true} to reset tables in DB
 app.use(bodyParser.json());
 app.use(require('./middleware/headers'));
 
