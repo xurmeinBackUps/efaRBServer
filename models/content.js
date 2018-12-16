@@ -1,5 +1,5 @@
-module.exports = function(sequelize, DataType){
-    return sequelize.define('content', {
+module.exports = (sequelize, DataType) => {
+    const Content = sequelize.define('content', {
         creator:{
             type: DataType.STRING,
             allowNull: false,
@@ -13,4 +13,8 @@ module.exports = function(sequelize, DataType){
             allowNull: false,
         }
     });
+    Content.associate = (User) => {
+        Content.belongsTo(User, {foreignKey: 'username', sourcetKey: 'creator'})
+    };
+    return Content
 };

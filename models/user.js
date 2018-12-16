@@ -1,5 +1,5 @@
-module.exports = function(sequelize, DataType){
-    return sequelize.define('user', {
+module.exports = (sequelize, DataType) => {
+    const User = sequelize.define('user', {
         username:{
             type: DataType.STRING,
             allowNull: false,
@@ -22,4 +22,8 @@ module.exports = function(sequelize, DataType){
             }
         }
     });
+   
+    User.hasMany(Content, {foreignKey: 'username', targetKey: 'creator' })
+    
+    return User
 };

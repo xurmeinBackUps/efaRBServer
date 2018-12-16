@@ -1,12 +1,12 @@
 require('dotenv').config();
 
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
+app.use(require('cors'));
 
 var user = require('./controllers/usercontroller');
 var content = require('./controllers/contentcontroller');
-
 var sequelize = require('./db');
 
 var bodyParser = require('body-parser');
@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 
 sequelize.sync(); ///{force:true} to reset tables in DB
 app.use(bodyParser.json());
+
 app.use(require('./middleware/headers'));
 
 app.use('/database/server-test', function(req, res){
