@@ -14,7 +14,6 @@ var bodyParser = require('body-parser');
 
 sequelize.sync(); ///{force:true} to reset tables in DB
 app.use(bodyParser.json());
-
 app.use(require('./middleware/headers'));
 
 app.use('/database/server-test', function(req, res){
