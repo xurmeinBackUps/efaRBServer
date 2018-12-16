@@ -13,8 +13,8 @@ module.exports = (sequelize, DataType) => {
             allowNull: false,
         }
     });
-    Content.associate = (User) => {
-        Content.belongsTo(User, {foreignKey: 'username', sourcetKey: 'creator'})
+    Content.associate = models => {
+        Content.belongsTo(models, {foreignKey: ['user']})
     };
     return Content
 };

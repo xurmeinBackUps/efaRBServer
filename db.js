@@ -16,4 +16,11 @@ sequelize.authenticate().then(
     }
 );
 
+
+const User = sequelize.import('./models/user');
+const Content = sequelize.import('./models/content');
+
+User.hasMany(Content);
+Content.belongsTo(User);
+
 module.exports = sequelize;

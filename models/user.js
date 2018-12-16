@@ -22,8 +22,8 @@ module.exports = (sequelize, DataType) => {
             }
         }
     });
-   
-    User.hasMany(Content, {foreignKey: 'username', targetKey: 'creator' })
-    
+    User.associate = models => {
+        User.hasMany(models, {foreignKey: ['content'] })
+    }
     return User
 };
