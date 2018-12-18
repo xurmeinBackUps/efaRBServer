@@ -14,7 +14,10 @@ module.exports = (sequelize, DataType) => {
         }
     });
     Content.associate = models => {
-        Content.belongsTo(models, {foreignKey: ['user']})
+        Content.belongsTo(models, {
+            foreignKey : 'username',
+            targetKey : 'creator'
+        })
     };
     return Content
 };

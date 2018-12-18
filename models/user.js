@@ -3,7 +3,8 @@ module.exports = (sequelize, DataType) => {
         username:{
             type: DataType.STRING,
             allowNull: false,
-            unique: true      
+            unique: true,
+            primaryKey: true  
         },
         password:{
             type: DataType.STRING,
@@ -23,7 +24,10 @@ module.exports = (sequelize, DataType) => {
         }
     });
     User.associate = models => {
-        User.hasMany(models, {foreignKey: ['content'] })
+        User.hasMany(models, {
+            foreignKey : 'username',
+            sourceKey : 'creator'
+        })
     }
     return User
 };
